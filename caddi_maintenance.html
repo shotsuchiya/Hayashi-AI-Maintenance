@@ -1,0 +1,1968 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>CADDi Maintenance</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --bg: #F2F3F5;
+  --white: #FFFFFF;
+  --border: #E5E7EB;
+  --border2: #D1D5DB;
+  --text: #111827;
+  --text2: #374151;
+  --text3: #6B7280;
+  --text4: #9CA3AF;
+  --blue: #2563EB;
+  --blue-light: #EFF6FF;
+  --blue-mid: #BFDBFE;
+  --green: #16A34A;
+  --green-light: #F0FDF4;
+  --orange: #D97706;
+  --orange-light: #FFFBEB;
+  --red: #DC2626;
+  --red-light: #FEF2F2;
+  --purple: #7C3AED;
+  --purple-light: #F5F3FF;
+  --radius: 12px;
+  --radius-sm: 8px;
+  --shadow: 0 1px 3px rgba(0,0,0,0.07), 0 1px 2px rgba(0,0,0,0.04);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+
+html, body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  height: 100%;
+  overflow: hidden;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  max-width: 430px;
+  margin: 0 auto;
+  background: var(--bg);
+  position: relative;
+  overflow: hidden;
+}
+
+/* ── TOPBAR ── */
+.topbar {
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+
+.topbar-logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.topbar-logo img {
+  height: 22px;
+}
+
+.logo-wordmark {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.5px;
+}
+
+.logo-blue { color: var(--blue); }
+
+.topbar-menu {
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 8px;
+  transition: background 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.topbar-menu:active { background: #F3F4F6; }
+
+/* ── SCREENS ── */
+.screens { flex: 1; overflow: hidden; position: relative; }
+
+.screen {
+  position: absolute;
+  inset: 0;
+  overflow-y: auto;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+.screen.active { opacity: 1; pointer-events: all; }
+
+/* ── BOTTOM NAV ── */
+.bottom-nav {
+  background: var(--white);
+  border-top: 1px solid var(--border);
+  height: 52px;
+  padding-bottom: env(safe-area-inset-bottom);
+  display: flex;
+  flex-shrink: 0;
+}
+
+.bnav-item {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--text3);
+  font-size: 13px;
+  font-weight: 600;
+  transition: color 0.15s;
+  position: relative;
+  border-top: 2px solid transparent;
+  margin-top: -2px;
+}
+.bnav-item.active {
+  color: var(--blue);
+  border-top-color: var(--blue);
+}
+.bnav-dot {
+  position: absolute;
+  top: 6px;
+  right: calc(50% - 22px);
+  background: var(--red);
+  color: white;
+  font-size: 9px;
+  font-weight: 700;
+  min-width: 15px; height: 15px;
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  padding: 0 3px;
+}
+
+/* ── COMMON ── */
+.page-content {
+  padding: 16px;
+  padding-bottom: 76px;
+}
+
+.page-header {
+  margin-bottom: 16px;
+}
+
+.page-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 2px;
+}
+
+.page-subtitle {
+  font-size: 14px;
+  color: var(--text3);
+}
+
+.section-header {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 20px 0 10px;
+}
+.section-header:first-child { margin-top: 0; }
+
+.card {
+  background: var(--white);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+
+.card-body { padding: 16px; }
+
+.card-header {
+  padding: 13px 16px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.card-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+/* ── BUTTONS ── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 11px 18px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+.btn:active { opacity: 0.8; }
+.btn-primary { background: var(--blue); color: white; }
+.btn-outline { background: white; color: var(--blue); border: 1.5px solid var(--blue); }
+.btn-ghost { background: white; color: var(--text2); border: 1px solid var(--border2); }
+.btn-danger { background: var(--red); color: white; }
+.btn-full { width: 100%; }
+.btn-sm { padding: 7px 14px; font-size: 13px; }
+
+/* ── FORM ── */
+.form-group { margin-bottom: 14px; }
+.form-group:last-child { margin-bottom: 0; }
+
+.form-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text3);
+  margin-bottom: 6px;
+}
+
+.form-control {
+  width: 100%;
+  border: 1px solid var(--border2);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  font-size: 14px;
+  font-family: 'Inter', sans-serif;
+  color: var(--text);
+  background: var(--white);
+  appearance: none;
+  transition: border-color 0.15s;
+}
+.form-control:focus { outline: none; border-color: var(--blue); }
+
+textarea.form-control { resize: none; height: 88px; line-height: 1.5; }
+
+.select-wrap { position: relative; }
+.select-wrap::after {
+  content: '';
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0; height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 5px solid var(--text3);
+  pointer-events: none;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+/* ── TAGS / BADGES ── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 9px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+}
+.badge-blue { background: var(--blue-light); color: var(--blue); }
+.badge-green { background: var(--green-light); color: var(--green); }
+.badge-orange { background: var(--orange-light); color: var(--orange); }
+.badge-red { background: var(--red-light); color: var(--red); }
+.badge-gray { background: #F3F4F6; color: var(--text3); }
+
+/* ── FILTER PILLS ── */
+.filter-row {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 2px;
+  margin-bottom: 4px;
+}
+.filter-row::-webkit-scrollbar { display: none; }
+
+.filter-pill {
+  flex-shrink: 0;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 500;
+  border: 1px solid var(--border2);
+  color: var(--text3);
+  background: var(--white);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.filter-pill.active {
+  background: var(--blue);
+  border-color: var(--blue);
+  color: white;
+  font-weight: 600;
+}
+
+/* ── STATS ROW ── */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.stat-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 12px;
+  text-align: center;
+  box-shadow: var(--shadow);
+}
+.stat-val {
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.stat-label {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text4);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+/* ── WO CARD ── */
+.wo-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+  position: relative;
+  overflow: hidden;
+  transition: box-shadow 0.15s;
+}
+.wo-card:active { box-shadow: none; }
+
+.wo-card-left-bar {
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 3px;
+}
+.bar-high { background: var(--red); }
+.bar-mid  { background: var(--orange); }
+.bar-low  { background: var(--green); }
+
+.wo-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.wo-id {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--blue);
+  margin-bottom: 3px;
+}
+
+.wo-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.wo-bottom {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.wo-dt {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--red);
+  background: var(--red-light);
+  padding: 2px 8px;
+  border-radius: 5px;
+  margin-left: auto;
+}
+.wo-dt-closed {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--green);
+  background: var(--green-light);
+  padding: 2px 8px;
+  border-radius: 5px;
+  margin-left: auto;
+}
+
+.wo-assigned {
+  font-size: 12px;
+  color: var(--text4);
+}
+
+/* ── FAB ── */
+.fab {
+  position: fixed;
+  bottom: 64px;
+  right: calc(50% - 215px + 16px);
+  width: 50px; height: 50px;
+  border-radius: 50%;
+  background: var(--blue);
+  color: white;
+  font-size: 22px;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(37,99,235,0.35);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 50;
+  transition: opacity 0.15s;
+}
+.fab:active { opacity: 0.85; }
+
+/* ── BACK NAV ── */
+.page-nav {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+.back-btn {
+  width: 34px; height: 34px;
+  border-radius: 8px;
+  border: 1px solid var(--border2);
+  background: var(--white);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+  cursor: pointer;
+  color: var(--text2);
+  flex-shrink: 0;
+}
+.page-nav-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+/* ── SUGGESTION CHIPS ── */
+.chips-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.chip {
+  padding: 7px 14px;
+  border-radius: 20px;
+  border: 1px solid var(--border2);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text2);
+  background: var(--white);
+  cursor: pointer;
+  transition: all 0.12s;
+}
+.chip.selected {
+  background: var(--blue-light);
+  border-color: var(--blue);
+  color: var(--blue);
+  font-weight: 600;
+}
+
+/* ── AI SECTION ── */
+.ai-loading {
+  display: flex; flex-direction: column;
+  align-items: center; gap: 12px;
+  padding: 32px 20px;
+}
+.ai-spinner {
+  width: 32px; height: 32px;
+  border: 3px solid var(--blue-mid);
+  border-top-color: var(--blue);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.ai-loading-text { font-size: 13px; color: var(--text3); }
+
+.ai-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: var(--blue-light);
+  border: 1px solid var(--blue-mid);
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--blue);
+  margin-bottom: 14px;
+}
+
+.ai-block {
+  background: #F9FAFB;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  margin-bottom: 10px;
+}
+.ai-block-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+}
+.ai-block-text { font-size: 13px; color: var(--text2); line-height: 1.6; }
+
+/* ── CHECKPOINT ── */
+.cp-list { padding: 0; }
+.cp-item {
+  display: flex;
+  gap: 12px;
+  padding: 11px 0;
+  position: relative;
+}
+.cp-item:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  left: 12px; top: 36px; bottom: 0;
+  width: 1px; background: var(--border);
+}
+.cp-circle {
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700;
+  flex-shrink: 0; z-index: 1;
+}
+.cp-pending { background: #F3F4F6; color: var(--text4); border: 1.5px solid var(--border2); }
+.cp-active  { background: var(--blue-light); color: var(--blue); border: 1.5px solid var(--blue); }
+.cp-done    { background: var(--green-light); color: var(--green); border: 1.5px solid var(--green); }
+
+.cp-body { flex: 1; }
+.cp-title { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 2px; }
+.cp-hint  { font-size: 12px; color: var(--text3); }
+.cp-result {
+  display: inline-block;
+  font-size: 12px; font-weight: 600;
+  padding: 2px 8px; border-radius: 5px;
+  margin-top: 4px;
+}
+.result-ok  { background: var(--green-light); color: var(--green); }
+.result-warn { background: var(--red-light); color: var(--red); }
+.result-prog { background: var(--orange-light); color: var(--orange); }
+
+/* ── PARTS ── */
+.part-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: #F9FAFB;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  margin-bottom: 8px;
+}
+.part-icon { font-size: 18px; }
+.part-info { flex: 1; }
+.part-name { font-size: 13px; font-weight: 600; color: var(--text); }
+.part-meta { font-size: 11px; color: var(--text3); margin-top: 1px; }
+
+/* ── TABS ── */
+.tab-bar {
+  display: flex;
+  border-bottom: 1px solid var(--border);
+  background: var(--white);
+}
+.tab-btn {
+  flex: 1;
+  padding: 12px 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text3);
+  border: none;
+  background: transparent;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  transition: all 0.15s;
+}
+.tab-btn.active { color: var(--blue); border-bottom-color: var(--blue); }
+
+.tab-pane { display: none; }
+.tab-pane.active { display: block; }
+
+/* ── ACTIVITY ── */
+.activity-item {
+  display: flex;
+  gap: 10px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+}
+.activity-item:last-child { border-bottom: none; }
+
+.a-avatar {
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700;
+  flex-shrink: 0;
+}
+.a-body { flex: 1; }
+.a-who { font-size: 13px; font-weight: 600; color: var(--text); }
+.a-text { font-size: 13px; color: var(--text2); margin-top: 2px; line-height: 1.4; }
+.a-time { font-size: 11px; color: var(--text4); margin-top: 4px; }
+.a-part {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--orange-light);
+  border: 1px solid #FDE68A;
+  border-radius: 5px;
+  padding: 2px 8px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--orange);
+  margin-top: 5px;
+}
+.a-file {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--blue-light);
+  border: 1px solid var(--blue-mid);
+  border-radius: 5px;
+  padding: 2px 8px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--blue);
+  margin-top: 5px;
+  margin-left: 4px;
+}
+
+/* ── ADD ACTIVITY ── */
+.add-box {
+  border: 1px dashed var(--border2);
+  border-radius: var(--radius);
+  padding: 14px;
+  margin-top: 8px;
+  background: var(--white);
+}
+.add-box-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text2);
+  margin-bottom: 12px;
+}
+
+.parts-add-row {
+  display: grid;
+  grid-template-columns: 1fr 70px 32px;
+  gap: 8px;
+  margin-bottom: 8px;
+  align-items: center;
+}
+.add-part-link {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--blue);
+  cursor: pointer;
+  margin-bottom: 12px;
+  display: inline-block;
+}
+
+/* ── FILE ATTACH ── */
+.file-zone {
+  border: 1.5px dashed var(--border2);
+  border-radius: var(--radius-sm);
+  padding: 16px;
+  text-align: center;
+  background: #FAFAFA;
+  cursor: pointer;
+  position: relative;
+  transition: border-color 0.15s;
+}
+.file-zone:active { border-color: var(--blue); }
+.file-zone input {
+  position: absolute; inset: 0;
+  opacity: 0; cursor: pointer;
+  width: 100%; height: 100%;
+}
+.file-zone-icon { font-size: 20px; margin-bottom: 4px; }
+.file-zone-label { font-size: 13px; font-weight: 500; color: var(--text3); }
+.file-zone-hint  { font-size: 11px; color: var(--text4); margin-top: 2px; }
+
+.file-list { margin-top: 8px; display: flex; flex-direction: column; gap: 6px; }
+.file-item {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 10px;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+}
+.file-item-icon { font-size: 15px; }
+.file-item-name { font-size: 12px; font-weight: 500; color: var(--text); flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.file-item-size { font-size: 11px; color: var(--text4); flex-shrink: 0; }
+.file-remove { font-size: 14px; color: var(--text4); cursor: pointer; padding: 0 4px; }
+
+/* ── CLOSE WO ── */
+.close-box {
+  background: var(--red-light);
+  border: 1px solid #FECACA;
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 14px;
+}
+.close-box-title {
+  font-size: 14px; font-weight: 700;
+  color: var(--red); margin-bottom: 14px;
+}
+
+/* ── KNOWLEDGE BANNER ── */
+.kb-banner {
+  background: linear-gradient(135deg, #EFF6FF 0%, #F5F3FF 100%);
+  border: 1px solid #BFDBFE;
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 16px;
+  display: flex; gap: 12px;
+}
+.kb-icon { font-size: 28px; flex-shrink: 0; }
+.kb-title { font-size: 14px; font-weight: 700; color: var(--blue); margin-bottom: 3px; }
+.kb-desc  { font-size: 12px; color: var(--text3); line-height: 1.4; }
+
+/* ── WO DETAIL HEADER ── */
+.wo-detail-hd {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 14px;
+  box-shadow: var(--shadow);
+}
+.wo-detail-id { font-size: 11px; font-weight: 600; color: var(--blue); margin-bottom: 5px; }
+.wo-detail-title { font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 10px; line-height: 1.2; }
+.wo-detail-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+.wo-timer-row {
+  display: flex; align-items: center; justify-content: space-between;
+  background: var(--red-light);
+  border: 1px solid #FECACA;
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+}
+.wo-timer-label { font-size: 11px; font-weight: 600; color: var(--red); }
+.wo-timer-val { font-size: 20px; font-weight: 700; color: var(--red); }
+.wo-assigned-label { font-size: 12px; color: var(--text3); }
+
+/* ── TOAST ── */
+.toast {
+  position: fixed;
+  top: 64px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-10px);
+  background: #1F2937;
+  color: white;
+  border-radius: 10px;
+  padding: 12px 18px;
+  font-size: 13px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  z-index: 999;
+  max-width: 340px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+}
+.toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+.toast-icon { font-size: 16px; flex-shrink: 0; }
+.toast-text { flex: 1; overflow: hidden; text-overflow: ellipsis; }
+.toast-id {
+  font-family: monospace;
+  font-size: 12px;
+  color: #60A5FA;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- TOAST -->
+  <div class="toast" id="toast">
+    <span class="toast-icon">✅</span>
+    <span class="toast-text" id="toast-text">Work order created</span>
+    <span class="toast-id" id="toast-id"></span>
+  </div>
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="topbar-logo">
+      <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAASABIAAD/4QEyRXhpZgAATU0AKgAAAAgABwEOAAIAAAALAAAAYgESAAMAAAABAAEAAAEaAAUAAAABAAAAbgEbAAUAAAABAAAAdgEoAAMAAAABAAIAAAEyAAIAAAAUAAAAfodpAAQAAAABAAAAkgAAAABTY3JlZW5zaG90AAAAAABIAAAAAQAAAEgAAAABMjAyNjowNDoxNSAxNzowNjowNAAACZAAAAcAAAAEMDIyMZADAAIAAAAUAAABBJEBAAcAAAAEAQIDAJKGAAcAAAASAAABGKAAAAcAAAAEMDEwMKABAAMAAAAB//8AAKACAAQAAAABAAABWaADAAQAAAABAAAAfaQGAAMAAAABAAAAAAAAAAAyMDI2OjA0OjE1IDE3OjA2OjA0AEFTQ0lJAAAAU2NyZWVuc2hvdP/tAG5QaG90b3Nob3AgMy4wADhCSU0EBAAAAAAANhwBWgADGyVHHAIAAAIAAhwCeAAKU2NyZWVuc2hvdBwCPAAGMTcwNjA0HAI3AAgyMDI2MDQxNThCSU0EJQAAAAAAEJ+LHbJqv5zcHjp/a+d2YeP/4gIoSUNDX1BST0ZJTEUAAQEAAAIYYXBwbAQAAABtbnRyUkdCIFhZWiAH5gABAAEAAAAAAABhY3NwQVBQTAAAAABBUFBMAAAAAAAAAAAAAAAAAAAAAAAA9tYAAQAAAADTLWFwcGwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAApkZXNjAAAA/AAAADBjcHJ0AAABLAAAAFB3dHB0AAABfAAAABRyWFlaAAABkAAAABRnWFlaAAABpAAAABRiWFlaAAABuAAAABRyVFJDAAABzAAAACBjaGFkAAAB7AAAACxiVFJDAAABzAAAACBnVFJDAAABzAAAACBtbHVjAAAAAAAAAAEAAAAMZW5VUwAAABQAAAAcAEQAaQBzAHAAbABhAHkAIABQADNtbHVjAAAAAAAAAAEAAAAMZW5VUwAAADQAAAAcAEMAbwBwAHkAcgBpAGcAaAB0ACAAQQBwAHAAbABlACAASQBuAGMALgAsACAAMgAwADIAMlhZWiAAAAAAAAD21QABAAAAANMsWFlaIAAAAAAAAIPfAAA9v////7tYWVogAAAAAAAASr8AALE3AAAKuVhZWiAAAAAAAAAoOAAAEQsAAMi5cGFyYQAAAAAAAwAAAAJmZgAA8qcAAA1ZAAAT0AAACltzZjMyAAAAAAABDEIAAAXe///zJgAAB5MAAP2Q///7ov///aMAAAPcAADAbv/AABEIAH0BWQMBIgACEQEDEQH/xAAfAAABBQEBAQEBAQAAAAAAAAAAAQIDBAUGBwgJCgv/xAC1EAACAQMDAgQDBQUEBAAAAX0BAgMABBEFEiExQQYTUWEHInEUMoGRoQgjQrHBFVLR8CQzYnKCCQoWFxgZGiUmJygpKjQ1Njc4OTpDREVGR0hJSlNUVVZXWFlaY2RlZmdoaWpzdHV2d3h5eoOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4eLj5OXm5+jp6vHy8/T19vf4+fr/xAAfAQADAQEBAQEBAQEBAAAAAAAAAQIDBAUGBwgJCgv/xAC1EQACAQIEBAMEBwUEBAABAncAAQIDEQQFITEGEkFRB2FxEyIygQgUQpGhscEJIzNS8BVictEKFiQ04SXxFxgZGiYnKCkqNTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqCg4SFhoeIiYqSk5SVlpeYmZqio6Slpqeoqaqys7S1tre4ubrCw8TFxsfIycrS09TV1tfY2dri4+Tl5ufo6ery8/T19vf4+fr/2wBDAAICAgICAgMCAgMFAwMDBQYFBQUFBggGBgYGBggKCAgICAgICgoKCgoKCgoMDAwMDAwODg4ODg8PDw8PDw8PDw//2wBDAQIDAwQEBAcEBAcQCwkLEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBD/3QAEABb/2gAMAwEAAhEDEQA/AP38ooooAKKKKACiiigAoopM0ALRVaO4t5iyRSK7IcEKQSD6HHSrNDXQlO+wUUUUFBRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQB//9D9/KKKKACiiigBv160n060HPHSuO8YeOfCngPTDqvirUI7CDnYHOXcj+GNBlmPsoP5VcISm+WKuzKpUhTjzTdkdiSe1fI/7U/xQXwx4QHhjw7qyQa1qEqRzxxP+/itSrM7fLyuSFXnBIJx3ryfxZ+0X8RfijqbeEfg3pk9rHNlfOQA3bp03Fs7IF55bOR13DpXZfDr9kawQ/238VbttUvZ8s1rFI4jUsOfMmBDs3+6QM92FfY4bAUsFJV8e7W+z1PiMVmNbHxlh8vj/wBvdD4T8JeLtd8E+ILXxHoFy9vd2zhjhiFkXOWRx/ErdCDX7UeHPE2heLNJi1nw7fxX9nIMeZEwIBxypxyrDuDgjvXz7ZfsjfCO2a5MyXtyJ1KoJLjAhJ6MmxVJI7b9w9RXg3iD4IfFz4IanJ4q+FGoT6lYJyyQjM4QchZoOVlUeqgnvtXrXq5hXwOayiqUuSa79Tx8uo4/KE5VY80Hvbofo9kYpM8euK+Ovhh+1l4e8QvFo/xAiXQtSyF88Z+yO+cck5MR/wB7K+rDpX17BNDdQpcW0iyxSAMrIQQQeQQRxgjvXwuKwVbDT5asbH6Dg8fh8XHmoyLdFFFcB6YUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQB//9H9/KKKKAI8/gK+b/GH7UHwz8Ga/L4cuPtWoXFs3lzvaRo8cTg4ZSzOmSvfaDjp1GK+j25U45PavxC8d+D/ABF4I8UXuheJIJEuo5GKyMDtnQscSo38St1z68HkEV9dkGW4fG1JRrM+J4izPEYGlCVBH238Qf2ubeUjQ/hRZPqF7c4RbqaJtoZ+ixQcO75OPmwAf4WFct4Q/Zt8f/EvUx4v+Mupz2yz4YQMQ1269QpzlIF54UAkcjated/An4leH/g7rdzYePPDkkF1cspF80JF1boyj5fLcBvLYfMSpBPo3GP0x8O+JdB8V6ZFrHhy/iv7OXhXiYMM8ZBHVWHdTgjuK9TMJyy1ezwlOy/n3v8A5Hj5bCOaP2mMqXf8mxT8JeCfDHgbTF0nwtp0VhbjBIRfmcj+J2OWZvdiTXV/UYFOBH0oPavz+cpSlzSd7n6TCEaceWCsh1JgHiloqTU8D+J/7PngT4lrLeSwf2XrDZIvbZQGJ/6aJwsn1OGxwGFfJG347fsxXWQTqvhfd/tS2ZBP/fduxz7An+/iv0x9e1eL/E/4z/D74cWstp4huFvb50IGnwgSyuGHR1PyqpHd8AjoD0r6jL8fiHbDOPtIvp/Wx8fmeXYZf7Sp+zl3Mr4X/tCeBPiSIrFJf7K1l+PsdywBdv8ApjJwsnsBhsfwgV75njPFfhx4x8Qad4k8RXOtaNpEGgW07bktbdiUT3yTgE/7Kqvoor9cPgfqF9qnwn8M32pTvcXElmoeSQku20lQSTyTgDk81251k0cJCNenon07HFkOdzxk5Yepq11PWqKKK+KPvQooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKaWUdSKAuOopuV9f1oyvr+tArodRTdy+tDHCn2oC+gmfwx2o4/Cvym8BfHP4s6r8QPDmk6h4jmntLvVLSCVCseHikmRWU4QHBBIr9WV4Uf/AKq9jMctqYKcYVHe6PDyzNKeOjKVONraD6KKK8c90KKKKACiiigD/9L9/KKKKACvzs/bE/5H/wAK/wDXuf8A0dX6J1+dn7Yn/I/+Ff8Ar3P/AKOr6nh7/fV6P8j5Dib/AHB+qPs3xv8ADTwZ8R9OFh4o09Jyinyp1GyaEkfwSDkc845U9wa+JPEPwR+LnwQ1OTxT8KtQn1OwXl0hGZwg5CzQcrKo9VBPfavWv0dT7g9MCjGQfSuDCZpWw65N49nsduMyihiUp/DPuj48+GH7WXhzxE8Oj+P410LUuF+0DP2SRs45JyYj/vEr6sOlfXkE8F1Ck9vIskTqGVlOVIPIII4II714d8Tv2fPAnxKSS9kg/srWHyRe2ygFj/01ThZPqcNjgMBXyRj47/sw3XH/ABNfDG7/AGpbMgn8Gt2OfYE/3wK9X6nhMaubCPln/K/0Z5KxuMwD5cYueH8y/U/THnoOK4/xf438K+BNMOreKtRisLfooY5dyP4Y0GWY+yg+/FfFviz9s+S50SKHwZozWmpzp+9kumV0gb0jVf8AWeoZtoHdT0r4t8ReJtf8WanJrHiS+l1C7l6vIc4H91R0VR2VQAOwr0Mv4Wr1XfEe7E4cx4roUo8uF95n1L8Uf2tfEfiPzdJ8ARvounnKm5bBu5B/s4ysQ+hLdww6V8gzzz3U0lzcyNJNIxZ3clmZjySSeST61FRX6rg8vw+Ejy0UfkWMzCvi5c9aQV+yH7P/APyR3wt/16D/ANCNfjfX7H/s/wD/ACR7wt/16D/0M18fxf8A7tT9T7bg3/ep+h7LRRRX42ftp8e/tf8AxW8R/Dbwdpum+E7hrHUPEE0sZuU/1kUMCqX8v+6zF1G7qBnHOCPjjQfgj+034x0Wy8U6ZfXNzaapElxFJJquHdJBkEhpMgn3r3T/AIKAf8eXgj/rpqP8revrv4D/APJGPBf/AGCrX/0AUAfnP/wzZ+1V/wA95/8AwbL/APHKP+GbP2qv+e8//g2X/wCOV+uVFAHyl+y78PPid8P9M1+D4lO7zXs0DW++6FzhUVg+CGbbyR9a8p/bP+MXi7whdaT4C8J38uk/bbY3l3cW7GOZ0LtHHGrjDIMoxbacngdMg/oHX5Q/t4/8lU0X/sCxf+lNxQBjw/s6ftTXMSXEdxOyyqHBOrDJDDIP+sqX/hmz9qr/AJ7Tf+DYf/F1+r+kf8gmx/64R/8AoIrSoA/GTxd8OP2kPhLpH/Caa7ql5p9tbyxx+bDqZdw7nCjakhJB79vWv0e/Zu+I+rfFD4XWPiDXiG1O3lltLmRVCiV4cESbQAAWVlJA4znAA4HFftpf8kPu/wDr+tP/AEI1mfsP/wDJGZ/+wrc/+i4qAOE/aH+DXx08a/EifXfAEsiaS9tAihb8W48xAQ3yFx+eOa8O/wCGbP2qv+e03/g2H/xdfYHxS/ais/hl8RYvh9N4ek1B5Vtm+0LciMD7QcfcMbfd+vNfWNAH5Hf8M2ftVf8APab/AMGw/wDi64/xj4Q/aM+CFpZ+L9d1e802OS5W3iki1EzZlKtIFZFcgqQhyGBB6Gv2hr4i/bx/5JVov/Yai/8ASa4oA9/+CPju8+JXwu0HxjqSKl7eRulxsGFMsEjRMwHYOU3YHTOO1fLfxe+D3xv8S/EfWdb8KmX+y7pozBtvhEMLEin5Cwx8wPavZv2QB/xYLw//ANdL3/0qlqDXP2kINE+LKfCz+wWlZ721s/tX2gAA3Pl/Ns8s/d39N3OOor6DKqmIp1JTw0b2X4Hzec0sNUpRhiZ8qbPlj/hn/wDaR9Z//Bkv/wAcpf8AhQH7SPrP/wCDFf8A45X6jgcDtRj/ADivV/1mxP8AJH7jyP8AVXC/zy+//gH5F+IrD45/BK607V9Y1O5sHumfygLwTo5i2lg6BmUj5hwwINfp/wDD/wATHxj4J0XxTJGIn1K1imkVc4VyBvAzzgNkD2r5E/bdP+h+E/8Arpefyir6O+AmP+FO+Fv+vMD9TW+aVFicvpYuSSle2hyZRCWFzKtg4SvFLqadhL8IW11dI0ttEOswysFt4jbfaUliyWARfnDJtJPGRg+len/QcV+YHw3/AOTvrj0/tnWv/Qbiv0+9uwr5/M8G8NKCcr3SZ9JlGM+swnLltZ2H0UUV4Z9EFFFFABRRRQB//9P9/KKKKACvzs/bE/5H/wAK/wDXuf8A0dX6J1+df7YpH/CfeFeeluf/AEaK+p4d/wB9Xo/yPjuJ3/sD9Ufokn3F+gp1MjI2L9BT6+WPsI7IKqXEMNzbvDMiyRupUqwBBBHIIPUGrdNP3T+NNPYUlo7n4Qa0iR6xqEcahESeUAAYAAc4AFZlauu/8hrUP+viX/0I1lV/UdL4In8n1PjYUUUVoYhX7H/s/wD/ACR7wt/16D/0M1+OFfsh+z//AMkd8Lf9eg/9CNfnfF/+7U/U/S+Df96n6HslFFFfjZ+2n51f8FAP+PLwR/101H+VvX138B/+SMeC/wDsFWv/AKAK8D/bS+G/iLxp4O0fXfDdq99L4fmmaaCJS8nkXCrudVHLbDGMgc4JPQGvknwt+1/8VPBPh3TvCOn6fpRttHgS1j8+3nMu2IbRvImUbvXgfSgD9jKK/JP/AIbq+MP/AEDtF/8AAef/AOSKP+G6vjD/ANA7Rf8AwHn/APkigD9bK/KH9vH/AJKpov8A2BYv/Sm4r6y/Zf8AjV4s+M2ma9eeKoLO3fS5oI4haRvGCJVYndvkfP3RjGK+Tf28f+SqaL/2BYv/AEpuKAP0S8aeHb/xb8KtV8MaUyJe6ppT20JkYqgeSLau4gEgZPJwa/Nr/hiL41f8/Wlf+BUv/wAar9X9I/5BNj/1wj/9BFaVAH4nfEn9mf4k/C3wvJ4s8T3FjJYxyxxEW87yPukOF+Vo1GPWvuz9h/8A5IzP/wBhW5/9FxVp/tpf8kPu/wDr+tP/AEI1mfsP/wDJGZ/+wrc/+i4qAPlb9q//AJOTtP8Arnpv/oVfrdX4/ftiXUth8fHvoQDJb2tjIobkbkBIz044rU/4bq+MP/QP0X/wHn/+SKAP1tr4i/bx/wCSVaL/ANhqL/0muK+b/wDhur4w/wDQP0X/AMB5/wD5Irz34h/Hr4n/AB802w8FahpVrOY7tLmGPTrebz3lCPGBgySZGHPAGc4oA/RP9kEf8WC8Pf8AXS9/9Kpa+VPHn/J3UH/Yc0r+UFfb3wB8E6n8PfhJ4f8ACutKEv7eOSWdAc7JLiV5imRxlAwU44yDg4r8+fjlrF14d/aH1bX7JUa40y9s7mMSAlC8UMTKGAIJGRzgj619rw5Bzq1YLrFnwnFMuWjSk1tJH61g8Dp0p35V+X3/AA2R8Vu1npXH/TCb/wCP0f8ADZHxW/589K/78Tf/AB+sv9W8b2X3lrinBef3HqP7bn/Hl4S9PMvP5RV9H/ATj4OeFv8ArzX+Zr83vGvxL+Ifx6u9K0S50yK5ubRn8iKwhkDky7Q27c78DaOeAOSTX6j/AA28Mz+DvAWheGrwhp9PtIo5SpyPMwC+D3AYnB9K7M0pPDZbRwtR+9c4MpqrFZnWxVNe7b/I/Pv4b/8AJ3tx/wBhjWf/AEC4r9QD1Ffl/wDDj/k764H/AFGdZ/8AQLiv1APUVx8QP95R/wACPS4bX7qrp9ti0UUV8efahRRRQAUUUUAf/9T9/KKKKAImwAW7jmvw38Za7rviPxPqOr+JZHfUZ5380SE5jIYjywD91U+6F7AYr9ycfrXhvi39nj4W+M9bfxDq+mFLyVt07W8rRCU9y6rgZPcjBPUnNfW5DmdHA1JSqxvc+K4gymvj6cFRdrHkH7KPxVsdQ8Mf8IR4k1hP7Vs5ytlFO5DvbFVKorNwxVtwCgkhcDGAK+0lI7dK+N/iP+yN4Z1mI6h8O5f7C1CJQBA5d7aQr05JZo2/2huH+znJryrw78bvi38ENTj8LfFXTp9TsE4R5TmcION0M/KyqPRsntuXpW+IwVHHzlXwMtf5f8jmwuOrZdCOHx8dF9pH6O/rSPnYeOxrz/wJ8S/B3xHsBfeFtQW42gGWBvlmiz2eM8jnjPKnHBxXoLYCk+1fHzpzpy5ZqzR9tCrTqw56cro/CPXf+Q1qH/XxL/6Eayq1dd/5DWof9fEv/oRrKr+n6XwR9D+VqvxsKKK98+GH7O/jv4kGK/MX9j6O+D9ruFOXX1ij4ZvY8L/tZ4rHE4qjhoc9Z2NsNhKuJn7Oirs8Jt7e4u547W1iaaaVgqIilmZjwAAOST6Cv2Z+DOkanoHwu8N6Rq0DW15b2ieZE4wUJycMOxAPI7Hg1S+G/wAFfAvwvhEmiWn2jUduJL64w87Z6hTjCL7IAD3yea9fBHYV+L57nUcdalTXuo/buH8ingW6tV6voPooor4o+9CojHGeWQEn1AqWigCLyof7i/kKPKh/uL+QqWigCNEVPuqBn0GKGjRuWUE+4zUlFABRRRQA1lVhhhke9Iqqg+UAD2p9FAETRxtyygn3FHlQ/wBxfyFS0UAReVD/AHF/IUqIifdUDPoMVJRQAVEYom5ZASfUCpaKBNJ9CHyYf7i/kKPJh/uL+QqaindkcsexEsca/dUD6DFS0UUi0rdCIRRht4QZ9cc1LRRQCXkFFFFAwooooAKKKKAP/9X9/KKKKACiiigBOhFc54h8M6F4r0yXR/EVhFfWkv3o5VDDPYg9VYdiMEdjXRjGOKMH1pxlKLTjpYzlGM4uMldHwB46/ZZ8R+FL/wD4S34M6jKksBLLaGXy54/UQzcBh22vg44yxOKseAP2rdU0a7/4RX4x6fLb3EB8t7xYjHIh/wCniDAP1KD/AICetfegrzX4gfCnwR8S7I2/ibT1knRdsVzFhLiL/cfHT/ZOVPcV9VSzWFaKpY+PMu/VHyFXJqlCTq5dLl8vsn41avNHcatezwtujeeRlPqCxINdf4C+F/jT4k332Pwtp7TRIwEtxJ8kEOf70h4zjnaMsewNfcHhT9jbwrpWtvfeJdVl1mxjbMFqqfZwR/02ZWJb6Ltz16cV9f6Zpem6LYxaZpFpFZWkACxxQoERB6BVAAr7LG8VUoR5MIrs+LwHCdWpLnxbsj5s+F/7LvgzwT5Gq+I9uv6umGDSr/o0TY/5ZxnO4j+82fUBTX1IAFXaBgCgHFHSvy7E4qtiZ89Z3Z+r4TBUMLDkoxsSUUUVxnoBRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFAH/9b9/KKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKAP/2Q==" alt="CADDi" style="height:26px;object-fit:contain;">
+    </div>
+    <div class="topbar-menu" onclick="this.classList.toggle('open')" aria-label="Menu">
+      <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="11" cy="11" r="10.25" stroke="#D1D5DB" stroke-width="1.5"/>
+        <circle cx="7.5" cy="11" r="1.25" fill="#6B7280"/>
+        <circle cx="11" cy="11" r="1.25" fill="#6B7280"/>
+        <circle cx="14.5" cy="11" r="1.25" fill="#6B7280"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- SCREENS -->
+  <div class="screens">
+
+    <!-- ① BOARD -->
+    <div class="screen active" id="s-board">
+      <div class="page-content">
+
+        <div class="page-header">
+          <div class="page-title">Board</div>
+          <div class="page-subtitle">Frankfurt Plant · Today</div>
+        </div>
+
+        <!-- Plant filter -->
+        <div class="filter-row" id="plant-filters">
+          <div class="filter-pill active" onclick="plantFilter(this,'all')">All Plants</div>
+          <div class="filter-pill" onclick="plantFilter(this,'p2')">Plant 2</div>
+          <div class="filter-pill" onclick="plantFilter(this,'p3')">Plant 3</div>
+        </div>
+
+        <!-- Line filter -->
+        <div id="line-filter-wrap" style="display:none; margin-bottom:4px;">
+          <div class="filter-row" id="line-filters"></div>
+        </div>
+
+        <!-- WO list -->
+        <div id="wo-list"></div>
+
+      </div>
+    </div>
+
+    <!-- ② NEW WO -->
+    <div class="screen" id="s-new">
+      <div class="page-content">
+        <div class="page-nav">
+          <div class="back-btn" onclick="go('board')">‹</div>
+          <div class="page-nav-title">Troubleshoot</div>
+        </div>
+
+        <!-- Step 1 -->
+        <div id="step1">
+          <div class="card">
+            <div class="card-body">
+              <div class="form-group">
+                <label class="form-label">Plant</label>
+                <div class="select-wrap">
+                  <select class="form-control" id="new-plant" onchange="updateNewLines()">
+                    <option value="">Select Plant</option>
+                    <option value="p2">Plant 2</option>
+                    <option value="p3">Plant 3</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Line / Work Center</label>
+                <div class="select-wrap">
+                  <select class="form-control" id="new-line">
+                    <option>Select Plant first</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Equipment</label>
+                <div class="select-wrap">
+                  <select class="form-control" id="new-equip">
+                    <option>Select Plant first</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">What happened?</label>
+                <div class="chips-list">
+                  <div class="chip" onclick="selectChip(this)">Stopped</div>
+                  <div class="chip" onclick="selectChip(this)">Drive fault</div>
+                  <div class="chip selected" onclick="selectChip(this)">Abnormal noise</div>
+                  <div class="chip" onclick="selectChip(this)">Oil leak</div>
+                  <div class="chip" onclick="selectChip(this)">Overheating</div>
+                  <div class="chip" onclick="selectChip(this)">Sensor error</div>
+                </div>
+                <input class="form-control" type="text" placeholder="Or describe freely..." value="Abnormal noise from bearing">
+              </div>
+              <div class="form-group">
+                <label class="form-label">📎 Attach Files (optional)</label>
+                <div class="file-zone">
+                  <input type="file" multiple accept="image/*,.pdf">
+                  <div class="file-zone-icon">📷</div>
+                  <div class="file-zone-label">Tap to attach photo or file</div>
+                  <div class="file-zone-hint">Photo, PDF, document</div>
+                </div>
+                <div class="file-list" id="new-files"></div>
+              </div>
+            </div>
+          </div>
+          <button class="btn btn-primary btn-full" onclick="runDiagnosis()">
+            Analyze &amp; Create WO
+          </button>
+        </div>
+
+        <!-- Step 2: AI Result -->
+        <div id="step2" style="display:none;">
+          <div class="card" style="margin-bottom:12px;">
+            <div class="card-body">
+              <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;">
+                <span class="badge badge-blue">Plant 2</span>
+                <span class="badge badge-blue">WC21A</span>
+                <span class="badge badge-gray">Water Jet 21A</span>
+                <span class="badge badge-orange">Abnormal noise</span>
+              </div>
+
+              <div id="ai-loading" class="ai-loading">
+                <div class="ai-spinner"></div>
+                <div class="ai-loading-text">Analyzing 11,044 work orders...</div>
+              </div>
+
+              <div id="ai-result" style="display:none;">
+                <div class="ai-badge">🤖 AI Diagnosis — 94% confidence</div>
+
+                <div class="section-header" style="margin-top:0;">Checkpoints</div>
+                <div class="cp-list">
+                  <div class="cp-item">
+                    <div class="cp-circle cp-pending">1</div>
+                    <div class="cp-body">
+                      <div class="cp-title">Check bearing temperature</div>
+                      <div class="cp-hint">Touch test or IR gun — should be &lt;60°C</div>
+                    </div>
+                  </div>
+                  <div class="cp-item">
+                    <div class="cp-circle cp-pending">2</div>
+                    <div class="cp-body">
+                      <div class="cp-title">Inspect lubrication level</div>
+                      <div class="cp-hint">Sight glass on gearbox — MIN/MAX mark</div>
+                    </div>
+                  </div>
+                  <div class="cp-item">
+                    <div class="cp-circle cp-pending">3</div>
+                    <div class="cp-body">
+                      <div class="cp-title">Check drive belt tension</div>
+                      <div class="cp-hint">Deflection 8–12mm at midpoint</div>
+                    </div>
+                  </div>
+                  <div class="cp-item" style="padding-bottom:0;">
+                    <div class="cp-circle cp-pending">4</div>
+                    <div class="cp-body">
+                      <div class="cp-title">Inspect encoder cable</div>
+                      <div class="cp-hint">Check for breaks near connector</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div style="height:12px;"></div>
+
+                <div class="ai-block">
+                  <div class="ai-block-label">🔍 Root Cause (estimated)</div>
+                  <div class="ai-block-text">Premature bearing wear due to insufficient lubrication — seen in 7 of 9 similar past cases on WC21A.</div>
+                </div>
+
+                <div class="ai-block">
+                  <div class="ai-block-label">⚡ Recommended Action</div>
+                  <div class="ai-block-text">Refill gearbox oil first. If noise persists, replace bearing BRG-6205-2RS. Do NOT replace drive unit before checking above.</div>
+                </div>
+
+                <div class="section-header">Parts from similar cases</div>
+                <div class="part-item">
+                  <div class="part-icon">⚙️</div>
+                  <div class="part-info">
+                    <div class="part-name">Bearing BRG-6205-2RS</div>
+                    <div class="part-meta">Used 7× on WC21A · same symptom</div>
+                  </div>
+                </div>
+                <div class="part-item">
+                  <div class="part-icon">🛢️</div>
+                  <div class="part-info">
+                    <div class="part-name">Gearbox Oil ISO 220</div>
+                    <div class="part-meta">Used 5× on WC21A</div>
+                  </div>
+                </div>
+                <div class="part-item" style="margin-bottom:0;">
+                  <div class="part-icon">🔧</div>
+                  <div class="part-info">
+                    <div class="part-name">Drive Belt B-Type 900</div>
+                    <div class="part-meta">Used 3× on WC21A</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div id="step2-actions" style="display:none;">
+            <button class="btn btn-primary btn-full" style="margin-bottom:8px;" onclick="saveWO()">Save WO &amp; Start Working</button>
+            <button class="btn btn-ghost btn-full" onclick="go('board')">Save as Draft</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ③ WO DETAIL -->
+    <div class="screen" id="s-detail">
+      <div class="page-content">
+        <div class="page-nav">
+          <div class="back-btn" onclick="go('board')">‹</div>
+          <div class="page-nav-title">Work Order</div>
+          <span class="badge badge-orange" style="margin-left:auto;">In Progress</span>
+        </div>
+
+        <!-- WO Header -->
+        <div class="wo-detail-hd">
+          <div class="wo-detail-id" id="det-id">WO-0412 · Created 2:10 PM</div>
+          <div class="wo-detail-title" id="det-title">Water jet stopped — WC21A / Bale opener - LPET</div>
+          <div class="wo-detail-tags" id="det-tags">
+            <span class="badge badge-blue">Plant 2</span>
+            <span class="badge badge-blue">WC21A</span>
+            <span class="badge badge-gray">Day Shift</span>
+            <span class="badge badge-orange">Abnormal noise</span>
+          </div>
+          <div class="wo-timer-row">
+            <div>
+              <div class="wo-timer-label">Downtime</div>
+              <div class="wo-timer-val" id="det-dt">0h 00m</div>
+            </div>
+            <div class="wo-assigned-label" id="det-assigned">Assigned: —</div>
+          </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="card" style="margin-bottom:0;">
+          <div class="tab-bar">
+            <button class="tab-btn active" onclick="switchTab(this,'td-diag')">Diagnosis</button>
+            <button class="tab-btn" onclick="switchTab(this,'td-activity')">Activity Log</button>
+            <button class="tab-btn" onclick="switchTab(this,'td-close')">Close WO</button>
+          </div>
+
+          <!-- Diagnosis -->
+          <div class="tab-pane active" id="td-diag">
+            <div style="padding:16px;">
+              <div class="ai-badge">🤖 AI Diagnosis · WC21A / Abnormal noise</div>
+
+              <div class="section-header" style="margin-top:4px;">Checkpoints</div>
+              <div class="cp-list">
+                <div class="cp-item">
+                  <div class="cp-circle cp-done">✓</div>
+                  <div class="cp-body">
+                    <div class="cp-title">Check bearing temperature</div>
+                    <span class="cp-result result-warn">⚠ 72°C — above normal</span>
+                  </div>
+                </div>
+                <div class="cp-item">
+                  <div class="cp-circle cp-done">✓</div>
+                  <div class="cp-body">
+                    <div class="cp-title">Inspect lubrication level</div>
+                    <span class="cp-result result-warn">⚠ Below MIN mark</span>
+                  </div>
+                </div>
+                <div class="cp-item">
+                  <div class="cp-circle cp-active">3</div>
+                  <div class="cp-body">
+                    <div class="cp-title">Check drive belt tension</div>
+                    <span class="cp-result result-prog">In progress...</span>
+                  </div>
+                </div>
+                <div class="cp-item" style="padding-bottom:0;">
+                  <div class="cp-circle cp-pending">4</div>
+                  <div class="cp-body">
+                    <div class="cp-title">Inspect encoder cable</div>
+                    <div class="cp-hint">Pending</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="ai-block" style="margin-top:14px;">
+                <div class="ai-block-label">🔍 Root Cause</div>
+                <div class="ai-block-text">Lubrication below MIN — bearing overheating. Refill first, replace bearing if noise continues.</div>
+              </div>
+
+              <div class="section-header">Suggested Parts</div>
+              <div class="part-item">
+                <div class="part-icon">⚙️</div>
+                <div class="part-info">
+                  <div class="part-name">Bearing BRG-6205-2RS</div>
+                  <div class="part-meta">Used 7× · same issue on WC21A</div>
+                </div>
+              </div>
+              <div class="part-item" style="margin-bottom:0;">
+                <div class="part-icon">🛢️</div>
+                <div class="part-info">
+                  <div class="part-name">Gearbox Oil ISO 220</div>
+                  <div class="part-meta">Used 5× · WC21A</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Activity Log -->
+          <div class="tab-pane" id="td-activity">
+            <div style="padding:16px;">
+              <div class="activity-item">
+                <div class="a-avatar" style="background:#DBEAFE;color:#2563EB;">Z</div>
+                <div class="a-body">
+                  <div class="a-who">Zach</div>
+                  <div class="a-text">Bearing temp confirmed high at 72°C. Oil level below MIN mark. Refilling gearbox now.</div>
+                  <div style="display:flex;flex-wrap:wrap;gap:4px;">
+                    <div class="a-part">🛢️ Gearbox Oil ISO 220 × 1</div>
+                    <div class="a-file">📷 bearing_check.jpg</div>
+                  </div>
+                  <div class="a-time">2:32 PM · Today</div>
+                </div>
+              </div>
+              <div class="activity-item">
+                <div class="a-avatar" style="background:#D1FAE5;color:#16A34A;">T</div>
+                <div class="a-body">
+                  <div class="a-who">Travis</div>
+                  <div class="a-text">Drive belt tension checked — 10mm deflection, within spec. Moving to encoder cable check.</div>
+                  <div class="a-time">2:51 PM · Today</div>
+                </div>
+              </div>
+
+              <!-- Add activity -->
+              <div class="add-box">
+                <div class="add-box-title">+ Add Activity</div>
+                <div class="form-group">
+                  <textarea class="form-control" placeholder="What did you do?"></textarea>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Parts Used</label>
+                  <div id="parts-list">
+                    <div class="parts-add-row">
+                      <div class="select-wrap">
+                        <select class="form-control" style="font-size:13px;padding:8px 10px;">
+                          <option>— Select part —</option>
+                          <option>Bearing BRG-6205-2RS</option>
+                          <option>Gearbox Oil ISO 220</option>
+                          <option>Drive Belt B-900</option>
+                          <option>Encoder Cable</option>
+                        </select>
+                      </div>
+                      <div class="select-wrap">
+                        <select class="form-control" style="font-size:13px;padding:8px 10px;">
+                          <option>×1</option><option>×2</option><option>×3</option>
+                        </select>
+                      </div>
+                      <div onclick="this.parentElement.remove()" style="cursor:pointer;color:var(--text4);font-size:18px;text-align:center;">×</div>
+                    </div>
+                  </div>
+                  <div class="add-part-link" onclick="addPart()">+ Add Part</div>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">📎 Attach Files</label>
+                  <div class="file-zone">
+                    <input type="file" multiple accept="image/*,.pdf" onchange="handleFiles(this,'act-files')">
+                    <div class="file-zone-icon">📷</div>
+                    <div class="file-zone-label">Tap to attach photo or file</div>
+                    <div class="file-zone-hint">Photo, PDF, document</div>
+                  </div>
+                  <div class="file-list" id="act-files"></div>
+                </div>
+                <button class="btn btn-primary btn-full">Save Activity</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Close WO -->
+          <div class="tab-pane" id="td-close">
+            <div style="padding:16px;">
+              <div class="close-box">
+                <div class="close-box-title">Close Work Order</div>
+                <div class="form-group">
+                  <label class="form-label">Actual Downtime (hours)</label>
+                  <input class="form-control" type="number" value="2.5">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Action Taken</label>
+                  <textarea class="form-control">Refilled gearbox oil. Noise reduced. Bearing temperature back to normal range after 20 min.</textarea>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Root Cause (confirmed)</label>
+                  <textarea class="form-control" style="height:70px;">Insufficient lubrication schedule — bearing overheated.</textarea>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Additional Notes</label>
+                  <textarea class="form-control" style="height:70px;">Monitor oil level weekly. Consider updating PM checklist.</textarea>
+                </div>
+                <div class="form-group" style="margin-bottom:0;">
+                  <label class="form-label">📎 Attach Files</label>
+                  <div class="file-zone">
+                    <input type="file" multiple accept="image/*,.pdf,.doc,.docx" onchange="handleFiles(this,'close-files')">
+                    <div class="file-zone-icon">📷</div>
+                    <div class="file-zone-label">Attach photo or document</div>
+                    <div class="file-zone-hint">Photo, PDF, schematic</div>
+                  </div>
+                  <div class="file-list" id="close-files"></div>
+                </div>
+              </div>
+              <button class="btn btn-danger btn-full" onclick="go('board')">
+                Close WO &amp; Save Data
+              </button>
+              <div style="font-size:11px;color:var(--text4);text-align:center;margin-top:8px;">
+                This data will improve AI Diagnosis accuracy
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+
+    <!-- ④ KPI -->
+    <div class="screen" id="s-kpi">
+      <div class="page-content">
+
+        <div class="page-header">
+          <div class="page-title">KPI</div>
+          <div class="page-subtitle" id="kpi-subtitle">Frankfurt Plant · All Lines</div>
+        </div>
+
+        <!-- KPI Plant filter -->
+        <div class="filter-row" id="kpi-plant-filters">
+          <div class="filter-pill active" onclick="kpiPlantFilter(this,'all')">All Plants</div>
+          <div class="filter-pill" onclick="kpiPlantFilter(this,'p2')">Plant 2</div>
+          <div class="filter-pill" onclick="kpiPlantFilter(this,'p3')">Plant 3</div>
+        </div>
+        <div id="kpi-line-wrap" style="display:none;margin-bottom:4px;">
+          <div class="filter-row" id="kpi-line-filters"></div>
+        </div>
+
+        <!-- ── Availability ── -->
+        <div class="section-header" style="margin-top:16px;">Availability</div>
+
+        <!-- Day / Month toggle -->
+        <div style="display:flex;gap:8px;margin-bottom:14px;">
+          <button class="kpi-toggle active" id="tog-day" onclick="kpiToggle('day')">Daily</button>
+          <button class="kpi-toggle" id="tog-month" onclick="kpiToggle('month')">Monthly</button>
+        </div>
+
+        <!-- Daily view -->
+        <div id="kpi-daily">
+          <!-- Today score card -->
+          <div class="card" style="margin-bottom:12px;">
+            <div class="card-body">
+              <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px;">
+                <div>
+                  <div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">Today</div>
+                  <div style="font-size:36px;font-weight:800;color:var(--blue);line-height:1;">89%</div>
+                </div>
+                <div style="text-align:right;">
+                  <div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">Target</div>
+                  <div style="font-size:36px;font-weight:800;color:var(--text3);line-height:1;">92%</div>
+                </div>
+              </div>
+              <!-- Bar -->
+              <div style="position:relative;height:10px;background:#F3F4F6;border-radius:5px;overflow:visible;margin-bottom:8px;">
+                <div style="height:100%;width:89%;background:var(--orange);border-radius:5px;"></div>
+                <div style="position:absolute;top:-4px;left:92%;width:2px;height:18px;background:var(--blue);border-radius:1px;"></div>
+              </div>
+              <div style="display:flex;justify-content:space-between;font-size:12px;">
+                <span style="color:var(--orange);font-weight:700;">Actual 89%</span>
+                <span style="color:var(--red);font-weight:700;">▼ -3% vs Target</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 7-day trend -->
+          <div class="card">
+            <div class="card-header"><div class="card-title">7-Day Trend</div></div>
+            <div class="card-body" style="padding:12px 16px;">
+              <div style="display:flex;align-items:flex-end;gap:6px;height:80px;margin-bottom:6px;">
+                <div class="bar-col" style="--h:88%;--c:var(--orange)"><div class="bar-fill"></div><div class="bar-lbl">M</div></div>
+                <div class="bar-col" style="--h:91%;--c:var(--green)"><div class="bar-fill"></div><div class="bar-lbl">T</div></div>
+                <div class="bar-col" style="--h:83%;--c:var(--red)"><div class="bar-fill"></div><div class="bar-lbl">W</div></div>
+                <div class="bar-col" style="--h:92%;--c:var(--green)"><div class="bar-fill"></div><div class="bar-lbl">T</div></div>
+                <div class="bar-col" style="--h:87%;--c:var(--orange)"><div class="bar-fill"></div><div class="bar-lbl">F</div></div>
+                <div class="bar-col" style="--h:95%;--c:var(--green)"><div class="bar-fill"></div><div class="bar-lbl">S</div></div>
+                <div class="bar-col active-bar" style="--h:89%;--c:var(--blue)"><div class="bar-fill"></div><div class="bar-lbl" style="color:var(--blue);font-weight:700;">T</div></div>
+              </div>
+              <!-- target line label -->
+              <div style="display:flex;align-items:center;gap:6px;margin-top:4px;">
+                <div style="width:16px;height:2px;background:var(--blue);border-radius:1px;opacity:0.4;"></div>
+                <span style="font-size:11px;color:var(--text3);">Target 92%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Monthly view -->
+        <div id="kpi-monthly" style="display:none;">
+          <div class="card" style="margin-bottom:12px;">
+            <div class="card-body">
+              <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px;">
+                <div>
+                  <div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">April (MTD)</div>
+                  <div style="font-size:36px;font-weight:800;color:var(--orange);line-height:1;">87%</div>
+                </div>
+                <div style="text-align:right;">
+                  <div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">Target</div>
+                  <div style="font-size:36px;font-weight:800;color:var(--text3);line-height:1;">92%</div>
+                </div>
+              </div>
+              <div style="position:relative;height:10px;background:#F3F4F6;border-radius:5px;overflow:visible;margin-bottom:8px;">
+                <div style="height:100%;width:87%;background:var(--orange);border-radius:5px;"></div>
+                <div style="position:absolute;top:-4px;left:92%;width:2px;height:18px;background:var(--blue);border-radius:1px;"></div>
+              </div>
+              <div style="display:flex;justify-content:space-between;font-size:12px;">
+                <span style="color:var(--orange);font-weight:700;">Actual 87%</span>
+                <span style="color:var(--red);font-weight:700;">▼ -5% vs Target</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 6-month trend -->
+          <div class="card">
+            <div class="card-header"><div class="card-title">6-Month Trend</div></div>
+            <div class="card-body" style="padding:12px 16px;">
+              <div style="display:flex;align-items:flex-end;gap:6px;height:80px;margin-bottom:6px;">
+                <div class="bar-col" style="--h:90%;--c:var(--green)"><div class="bar-fill"></div><div class="bar-lbl">Nov</div></div>
+                <div class="bar-col" style="--h:88%;--c:var(--orange)"><div class="bar-fill"></div><div class="bar-lbl">Dec</div></div>
+                <div class="bar-col" style="--h:85%;--c:var(--orange)"><div class="bar-fill"></div><div class="bar-lbl">Jan</div></div>
+                <div class="bar-col" style="--h:89%;--c:var(--orange)"><div class="bar-fill"></div><div class="bar-lbl">Feb</div></div>
+                <div class="bar-col" style="--h:91%;--c:var(--green)"><div class="bar-fill"></div><div class="bar-lbl">Mar</div></div>
+                <div class="bar-col active-bar" style="--h:87%;--c:var(--blue)"><div class="bar-fill"></div><div class="bar-lbl" style="color:var(--blue);font-weight:700;">Apr</div></div>
+              </div>
+              <div style="display:flex;align-items:center;gap:6px;margin-top:4px;">
+                <div style="width:16px;height:2px;background:var(--blue);border-radius:1px;opacity:0.4;"></div>
+                <span style="font-size:11px;color:var(--text3);">Target 92%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Trouble Top 10 ── -->
+        <div class="section-header" style="margin-top:20px;">Trouble Ranking</div>
+        <div style="display:flex;gap:8px;margin-bottom:14px;">
+          <button class="kpi-toggle active" id="tog-freq" onclick="troubleToggle('freq')">Most Frequent</button>
+          <button class="kpi-toggle" id="tog-impact" onclick="troubleToggle('impact')">High Impact</button>
+        </div>
+
+        <!-- Frequent -->
+        <div id="trouble-freq">
+          <div class="card">
+            <div class="card-body" style="padding:8px 0;">
+              <div class="trouble-row"><span class="trouble-rank rank-1">1</span><div class="trouble-info"><div class="trouble-name">Drive fault F004</div><div class="trouble-meta">WC31 · 8 cases</div></div><div class="trouble-bar-wrap"><div class="trouble-bar" style="width:100%;background:var(--red);"></div></div><div class="trouble-val">8</div></div>
+              <div class="trouble-row"><span class="trouble-rank rank-2">2</span><div class="trouble-info"><div class="trouble-name">Bale opener stopped</div><div class="trouble-meta">WC21A · 6 cases</div></div><div class="trouble-bar-wrap"><div class="trouble-bar" style="width:75%;background:var(--orange);"></div></div><div class="trouble-val">6</div></div>
+              <div class="trouble-row"><span class="trouble-rank rank-3">3</span><div class="trouble-info"><div class="trouble-name">Feed breaker jam</div><div class="trouble-meta">WC21B · 5 cases</div></div><div class="trouble-bar-wrap"><div class="trouble-bar" style="width:63%;background:var(--orange);"></div></div><div class="trouble-val">5</div></div>
+              <div class="trouble-row"><span class="trouble-rank">4</span><div class="trouble-info"><div class="trouble-name">Servo rehome</div><div class="trouble-meta">WC22C · 4 cases</div></div><div class="trouble-bar-wrap"><div class="trouble-bar" style="width:50%;background:#94A3B8;"></div></div><div class="trouble-val">4</div></div>
+              <div class="trouble-row"><span class="trouble-rank">5</span><div class="trouble-info"><div class="trouble-name">Press mold overtemp</div><div class="trouble-meta">WC31 · 4 cases</div></div><div class="trouble-bar-wrap"><div class="trouble-bar" style="width:50%;background:#94A3B8;"></div></div><div class="trouble-val">4</div></div>
+              <div class="trouble-row"><span class="trouble-rank">6</span><div class="trouble-info"><div class="trouble-name">Recycle conveyor slip</div><div class="trouble-meta">WC22C · 3 cases</div></div><div class="trouble-bar-wrap"><div class="trouble-bar" style="width:38%;background:#94A3B8;"></div></div><div class="trouble-val">3</div></div>
+              <div class="trouble-row"><span class="trouble-rank">7</span><div class="trouble-info"><div class="trouble-name">Oil leak gearbox</div><div class="trouble-meta">WC31 · 3 cases</div></div><div class="trouble-bar-wrap"><div class="trouble-bar" style="width:38%;background:#94A3B8;"></div></div><div class="trouble-val">3</div></div>
+              <div class="trouble-row"><span class="trouble-rank">8</span><div class="trouble-info"><div class="trouble-name">Heater temp low</div><div class="trouble-meta">WC33 · 2 cases</div></div><div class="trouble-bar-wrap"><div class="trouble-bar" style="width:25%;background:#CBD5E1;"></div></div><div class="trouble-val">2</div></div>
+              <div class="trouble-row"><span class="trouble-rank">9</span><div class="trouble-info"><div class="trouble-name">Feed roll slip</div><div class="trouble-meta">WC33 · 2 cases</div></div><div class="trouble-bar-wrap"><div class="trouble-bar" style="width:25%;background:#CBD5E1;"></div></div><div class="trouble-val">2</div></div>
+              <div class="trouble-row" style="border:none;"><span class="trouble-rank">10</span><div class="trouble-info"><div class="trouble-name">Mix box jam</div><div class="trouble-meta">WC22C · 1 case</div></div><div class="trouble-bar-wrap"><div class="trouble-bar" style="width:13%;background:#CBD5E1;"></div></div><div class="trouble-val">1</div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- High Impact -->
+        <div id="trouble-impact" style="display:none;">
+          <div class="card">
+            <div class="card-body" style="padding:8px 0;">
+              <div class="trouble-row"><span class="trouble-rank rank-1">1</span><div class="trouble-info"><div class="trouble-name">Drive fault F004</div><div class="trouble-meta">WC31 · avg 4.2h</div></div><div class="trouble-bar-wrap"><div class="trouble-bar" style="width:100%;background:var(--red);"></div></div><div class="trouble-val">4.2h</div></div>
+              <div class="trouble-row"><span class="trouble-rank rank-2">2</span><div class="trouble-info"><div class="trouble-name">Press mold overtemp</div><div class="trouble-meta">WC31 · avg 3.8h</div></div><div class="trouble-bar-wrap"><div class="trouble-bar" style="width:90%;background:var(--red);"></div></div><div class="trouble-val">3.8h</div></div>
+              <div class="trouble-row"><span class="trouble-rank rank-3">3</span><div class="trouble-info"><div class="trouble-name">Bale opener stopped</div><div class="trouble-meta">WC21A · avg 2.5h</div></div><div class="trouble-bar-wrap"><div class="trouble-bar" style="width:60%;background:var(--orange);"></div></div><div class="trouble-val">2.5h</div></div>
+              <div class="trouble-row"><span class="trouble-rank">4</span><div class="trouble-info"><div class="trouble-name">Oil leak gearbox</div><div class="trouble-meta">WC31 · avg 2.2h</div></div><div class="trouble-bar-wrap"><div class="trouble-bar" style="width:52%;background:var(--orange);"></div></div><div class="trouble-val">2.2h</div></div>
+              <div class="trouble-row"><span class="trouble-rank">5</span><div class="trouble-info"><div class="trouble-name">Heater temp low</div><div class="trouble-meta">WC33 · avg 2.0h</div></div><div class="trouble-bar-wrap"><div class="trouble-bar" style="width:48%;background:var(--orange);"></div></div><div class="trouble-val">2.0h</div></div>
+              <div class="trouble-row"><span class="trouble-rank">6</span><div class="trouble-info"><div class="trouble-name">Feed breaker jam</div><div class="trouble-meta">WC21B · avg 1.6h</div></div><div class="trouble-bar-wrap"><div class="trouble-bar" style="width:38%;background:#94A3B8;"></div></div><div class="trouble-val">1.6h</div></div>
+              <div class="trouble-row"><span class="trouble-rank">7</span><div class="trouble-info"><div class="trouble-name">Servo rehome</div><div class="trouble-meta">WC22C · avg 1.5h</div></div><div class="trouble-bar-wrap"><div class="trouble-bar" style="width:36%;background:#94A3B8;"></div></div><div class="trouble-val">1.5h</div></div>
+              <div class="trouble-row"><span class="trouble-rank">8</span><div class="trouble-info"><div class="trouble-name">Feed roll slip</div><div class="trouble-meta">WC33 · avg 1.2h</div></div><div class="trouble-bar-wrap"><div class="trouble-bar" style="width:29%;background:#CBD5E1;"></div></div><div class="trouble-val">1.2h</div></div>
+              <div class="trouble-row"><span class="trouble-rank">9</span><div class="trouble-info"><div class="trouble-name">Recycle conveyor slip</div><div class="trouble-meta">WC22C · avg 0.9h</div></div><div class="trouble-bar-wrap"><div class="trouble-bar" style="width:21%;background:#CBD5E1;"></div></div><div class="trouble-val">0.9h</div></div>
+              <div class="trouble-row" style="border:none;"><span class="trouble-rank">10</span><div class="trouble-info"><div class="trouble-name">Mix box jam</div><div class="trouble-meta">WC22C · avg 0.5h</div></div><div class="trouble-bar-wrap"><div class="trouble-bar" style="width:12%;background:#CBD5E1;"></div></div><div class="trouble-val">0.5h</div></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ④ KNOWLEDGE -->
+    <div class="screen" id="s-knowledge">
+      <div class="page-content">
+        <div class="page-nav">
+          <div class="back-btn" onclick="go('board')">‹</div>
+          <div class="page-nav-title">Add Knowledge</div>
+        </div>
+
+        <div class="kb-banner">
+          <div class="kb-icon">🧠</div>
+          <div>
+            <div class="kb-title">Knowledge Entry</div>
+            <div class="kb-desc">Record a past fix that's not in the system. No downtime or date required — just the knowledge.</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-body">
+            <div class="form-row" style="margin-bottom:14px;">
+              <div class="form-group" style="margin-bottom:0;">
+                <label class="form-label">Plant</label>
+                <div class="select-wrap">
+                  <select class="form-control" id="kb-plant" onchange="updateKbFields()">
+                    <option value="">Select Plant</option>
+                    <option value="p2">Plant 2</option>
+                    <option value="p3">Plant 3</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group" style="margin-bottom:0;">
+                <label class="form-label">Line</label>
+                <div class="select-wrap">
+                  <select class="form-control" id="kb-line">
+                    <option>Select Plant first</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Equipment</label>
+              <div class="select-wrap">
+                <select class="form-control" id="kb-equip">
+                  <option>Select Plant first</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Symptom / Failure</label>
+              <input class="form-control" type="text" placeholder="e.g. Servo won't rehome after power cycle">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Root Cause</label>
+              <textarea class="form-control" style="height:72px;" placeholder="What actually caused it?"></textarea>
+            </div>
+            <div class="form-group">
+              <label class="form-label">How to Fix (step by step)</label>
+              <textarea class="form-control" placeholder="Step 1: Go to HMI panel...&#10;Step 2: Navigate to Servo Settings...&#10;Step 3: Enter password 1234..."></textarea>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Parts Involved (optional)</label>
+              <input class="form-control" type="text" placeholder="e.g. Encoder Cable, Bearing BRG-6205">
+            </div>
+            <div class="form-group" style="margin-bottom:0;">
+              <label class="form-label">📎 Attach Reference Files (optional)</label>
+              <div class="file-zone">
+                <input type="file" multiple accept="image/*,.pdf">
+                <div class="file-zone-icon">📄</div>
+                <div class="file-zone-label">Attach schematic, photo, or document</div>
+              </div>
+              <div class="file-list" id="kb-files"></div>
+            </div>
+          </div>
+        </div>
+
+        <button class="btn btn-primary btn-full" onclick="go('board')">
+          Save Knowledge
+        </button>
+        <div style="font-size:11px;color:var(--text4);text-align:center;margin-top:8px;margin-bottom:16px;">
+          Your knowledge improves AI Diagnosis for everyone
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /screens -->
+
+  <!-- FAB -->
+  <button class="fab" id="fab" onclick="go('new')">＋</button>
+
+  <!-- BOTTOM NAV -->
+  <nav class="bottom-nav">
+    <div class="bnav-item active" id="bn-board" onclick="go('board')">Board</div>
+    <div class="bnav-item" id="bn-new" onclick="go('new')">Troubleshoot</div>
+    <div class="bnav-item" id="bn-knowledge" onclick="go('knowledge')">Knowledge</div>
+    <div class="bnav-item" id="bn-kpi" onclick="go('kpi')">KPI</div>
+  </nav>
+
+</div>
+
+<script>
+// ── DATA ──
+const WO_DATA = [
+  { id:'WO-0412', title:'Water jet stopped',        plant:'p2', line:'WC21A', equip:'Bale opener - LPET',   pri:'high', status:'open',   dt:'4h 02m', by:'Zach'    },
+  { id:'WO-0415', title:'Bale opener fault',        plant:'p2', line:'WC21A', equip:'Bale opener - RPET',   pri:'high', status:'open',   dt:'1h 45m', by:'Travis'  },
+  { id:'WO-0413', title:'Feed breaker jam',         plant:'p2', line:'WC21B', equip:'Feed breaker 1',       pri:'mid',  status:'open',   dt:'2h 10m', by:'Gabe'    },
+  { id:'WO-0409', title:'Recycle conveyor error',   plant:'p2', line:'WC22C', equip:'Recycle 2',            pri:'mid',  status:'inprog', dt:'1h 30m', by:'Brandon' },
+  { id:'WO-0416', title:'Mix box 1 stopped',        plant:'p2', line:'WC22C', equip:'Mix box 1',            pri:'low',  status:'open',   dt:'0h 55m', by:'Tyler'   },
+  { id:'WO-0408', title:'Pre-opener noise',         plant:'p2', line:'WC22D', equip:'Pre-opener 1',         pri:'low',  status:'closed', dt:'0h 48m', by:'Tyler'   },
+  { id:'WO-0410', title:'Press mold fault',         plant:'p3', line:'WC31',  equip:'Press Mold',           pri:'high', status:'open',   dt:'4h 02m', by:'Travis'  },
+  { id:'WO-0418', title:'Heater not reaching temp', plant:'p3', line:'WC31',  equip:'Heater',               pri:'high', status:'inprog', dt:'2h 15m', by:'Zach'    },
+  { id:'WO-0411', title:'Feed roll slipping',       plant:'p3', line:'WC33',  equip:'Feed Roll',            pri:'mid',  status:'inprog', dt:'3h 20m', by:'Gabe'    },
+  { id:'WO-0417', title:'Glue applicator fault',    plant:'p3', line:'WC35',  equip:'Glue',                 pri:'low',  status:'open',   dt:'0h 40m', by:'Brandon' },
+  { id:'WO-0419', title:'WU trimming misaligned',   plant:'p3', line:'WC37',  equip:'WU Trimming',          pri:'mid',  status:'closed', dt:'1h 05m', by:'Travis'  },
+];
+
+const LINES = {
+  p2: ['WC21A','WC21B','WC22C','WC22D'],
+  p3: ['WC31','WC32','WC33','WC34','WC35','WC36','WC37'],
+};
+
+const EQUIP = {
+  p2: [
+    'Midi opener 1',
+    'Midi opener 2',
+    'Recycle 1',
+    'Recycle 2',
+    'Recycle 3',
+    'Recycle 4',
+    'Mix box 1',
+    'Mix box 2',
+    'Pre-opener 1',
+    'Pre-opener 2',
+    'Feed breaker 1',
+    'Feed breaker 2',
+    'Bale opener - LPET',
+    'Bale opener - RPET',
+    'Bale opener - Shoddy',
+    'Bale opener Recycle',
+  ],
+  p3: [
+    'Feed Roll',
+    'Measuring & Cut',
+    'Heater',
+    'Press Mold',
+    'WU Trimming',
+    'Glue',
+  ],
+};
+
+const PRI_ORDER    = { high:0, mid:1, low:2 };
+const STATUS_ORDER = { open:0, inprog:1, closed:2 };
+
+const STATUS_CFG = {
+  open:   { label:'Open',        badgeCls:'badge-red',    bar:'bar-high', section:'Open' },
+  inprog: { label:'In Progress', badgeCls:'badge-orange', bar:'bar-mid',  section:'In Progress' },
+  closed: { label:'Closed',      badgeCls:'badge-green',  bar:'bar-low',  section:'Closed Today' },
+};
+
+let filter = { plant:'all', line:'all' };
+let curScreen = 'board';
+
+// ── NAVIGATION ──
+function go(name) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.bnav-item').forEach(b => b.classList.remove('active'));
+
+  document.getElementById('s-' + name)?.classList.add('active');
+  document.getElementById('bn-' + name)?.classList.add('active');
+
+  const fab = document.getElementById('fab');
+  fab.style.display = name === 'board' ? 'flex' : 'none';
+
+  document.querySelectorAll('.screen').forEach(s => s.scrollTop = 0);
+  curScreen = name;
+}
+
+// ── BOARD ──
+function renderBoard() {
+  let list = WO_DATA.filter(w => {
+    if (filter.plant !== 'all' && w.plant !== filter.plant) return false;
+    if (filter.line  !== 'all' && w.line  !== filter.line)  return false;
+    // exclude closed from board
+    if (w.status === 'closed') return false;
+    return true;
+  });
+
+  // Sort by priority only: High → Mid → Low
+  list.sort((a, b) => PRI_ORDER[a.pri] - PRI_ORDER[b.pri]);
+
+  const el = document.getElementById('wo-list');
+  el.innerHTML = '';
+  let lastPri = null;
+
+  const priLabel = { high: '🔴 High Priority', mid: '🟠 Medium Priority', low: '🟢 Low Priority' };
+
+  list.forEach(w => {
+    const cfg = STATUS_CFG[w.status];
+
+    if (w.pri !== lastPri) {
+      const hd = document.createElement('div');
+      hd.className = 'section-header';
+      hd.textContent = priLabel[w.pri];
+      el.appendChild(hd);
+      lastPri = w.pri;
+    }
+
+    const card = document.createElement('div');
+    card.className = 'wo-card';
+    card.onclick = () => go('detail');
+    card.innerHTML = `
+      <div class="wo-card-left-bar ${cfg.bar}"></div>
+      <div class="wo-top">
+        <div>
+          <div class="wo-id">${w.id}</div>
+          <div class="wo-title">${w.title}</div>
+        </div>
+        <span class="badge ${cfg.badgeCls}">${cfg.label}</span>
+      </div>
+      <div class="wo-bottom">
+        <span class="badge badge-blue">${w.line}</span>
+        <span class="badge badge-gray">${w.equip}</span>
+        <div class="wo-dt">${w.dt}</div>
+        <div class="wo-assigned">${w.by}</div>
+      </div>
+    `;
+    el.appendChild(card);
+  });
+
+  // Closed today section at bottom
+  const closed = WO_DATA.filter(w => {
+    if (w.status !== 'closed') return false;
+    if (filter.plant !== 'all' && w.plant !== filter.plant) return false;
+    if (filter.line  !== 'all' && w.line  !== filter.line)  return false;
+    return true;
+  });
+
+  if (closed.length) {
+    const hd = document.createElement('div');
+    hd.className = 'section-header';
+    hd.textContent = '✅ Closed Today';
+    el.appendChild(hd);
+    closed.forEach(w => {
+      const cfg = STATUS_CFG[w.status];
+      const card = document.createElement('div');
+      card.className = 'wo-card';
+      card.onclick = () => go('detail');
+      card.style.opacity = '0.65';
+      card.innerHTML = `
+        <div class="wo-card-left-bar ${cfg.bar}"></div>
+        <div class="wo-top">
+          <div>
+            <div class="wo-id">${w.id}</div>
+            <div class="wo-title">${w.title}</div>
+          </div>
+          <span class="badge ${cfg.badgeCls}">${cfg.label}</span>
+        </div>
+        <div class="wo-bottom">
+          <span class="badge badge-blue">${w.line}</span>
+          <span class="badge badge-gray">${w.equip}</span>
+          <div class="wo-dt-closed">${w.dt}</div>
+          <div class="wo-assigned">${w.by}</div>
+        </div>
+      `;
+      el.appendChild(card);
+    });
+  }
+
+  if (!list.length && !closed.length) {
+    el.innerHTML = '<div style="text-align:center;padding:40px 16px;color:var(--text4);font-size:13px;">No work orders for this filter</div>';
+  }
+}
+
+function plantFilter(el, plant) {
+  document.querySelectorAll('#plant-filters .filter-pill').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  filter.plant = plant;
+  filter.line  = 'all';
+
+  const wrap = document.getElementById('line-filter-wrap');
+  const lf   = document.getElementById('line-filters');
+
+  if (plant === 'all') {
+    wrap.style.display = 'none';
+    lf.innerHTML = '';
+  } else {
+    wrap.style.display = 'block';
+    lf.innerHTML = '';
+    const all = makeFilterPill('All', true, () => lineFilter(all, 'all'));
+    lf.appendChild(all);
+    (LINES[plant] || []).forEach(ln => {
+      const pill = makeFilterPill(ln, false, () => lineFilter(pill, ln));
+      lf.appendChild(pill);
+    });
+  }
+  renderBoard();
+}
+
+function lineFilter(el, line) {
+  document.querySelectorAll('#line-filters .filter-pill').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  filter.line = line;
+  renderBoard();
+}
+
+function makeFilterPill(label, active, fn) {
+  const d = document.createElement('div');
+  d.className = 'filter-pill' + (active ? ' active' : '');
+  d.textContent = label;
+  d.onclick = fn;
+  return d;
+}
+
+// ── NEW WO ──
+function updateNewLines() {
+  const plant = document.getElementById('new-plant').value;
+
+  // Update line dropdown
+  const lineSel = document.getElementById('new-line');
+  lineSel.innerHTML = '';
+  (LINES[plant] || []).forEach(ln => {
+    const o = document.createElement('option');
+    o.value = ln; o.textContent = ln;
+    lineSel.appendChild(o);
+  });
+  if (!plant) lineSel.innerHTML = '<option>Select Plant first</option>';
+
+  // Update equipment dropdown
+  const equipSel = document.getElementById('new-equip');
+  equipSel.innerHTML = '';
+  const equipList = EQUIP[plant] || [];
+  if (!equipList.length) {
+    equipSel.innerHTML = '<option>Select Plant first</option>';
+  } else {
+    equipList.forEach(eq => {
+      const o = document.createElement('option');
+      o.value = eq; o.textContent = eq;
+      equipSel.appendChild(o);
+    });
+  }
+}
+
+function updateKbFields() {
+  const plant = document.getElementById('kb-plant').value;
+
+  const lineSel = document.getElementById('kb-line');
+  lineSel.innerHTML = '';
+  const lines = LINES[plant] || [];
+  if (!lines.length) { lineSel.innerHTML = '<option>Select Plant first</option>'; }
+  else lines.forEach(ln => { const o = document.createElement('option'); o.value = ln; o.textContent = ln; lineSel.appendChild(o); });
+
+  const equipSel = document.getElementById('kb-equip');
+  equipSel.innerHTML = '';
+  const equips = EQUIP[plant] || [];
+  if (!equips.length) { equipSel.innerHTML = '<option>Select Plant first</option>'; }
+  else equips.forEach(eq => { const o = document.createElement('option'); o.value = eq; o.textContent = eq; equipSel.appendChild(o); });
+}
+
+// ── WO COUNTER ──
+let woCounter = 420;
+
+// ── SAVE WO ──
+function saveWO() {
+  const plant = document.getElementById('new-plant').value || 'p2';
+  const line  = document.getElementById('new-line').value  || 'WC21A';
+  const equip = document.getElementById('new-equip').value || 'Equipment';
+
+  // Pick the selected failure chip or input
+  const chipEl = document.querySelector('#s-new .chip.selected');
+  const inputEl = document.querySelector('#s-new input[type=text]');
+  const failure = chipEl ? chipEl.textContent : (inputEl?.value || 'Fault');
+
+  const now = new Date();
+  const timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+  const id = 'WO-0' + woCounter++;
+  const plantLabel = plant === 'p2' ? 'Plant 2' : 'Plant 3';
+
+  // Add to WO_DATA
+  const newWO = {
+    id, title: failure,
+    plant, line, equip,
+    pri: 'high', status: 'open',
+    dt: '0h 00m', by: 'You'
+  };
+  WO_DATA.unshift(newWO);
+
+  // Update detail screen
+  document.getElementById('det-id').textContent    = id + ' · Created ' + timeStr;
+  document.getElementById('det-title').textContent = failure + ' — ' + line + ' / ' + equip;
+  document.getElementById('det-dt').textContent    = '0h 00m';
+  document.getElementById('det-assigned').textContent = 'Assigned: You';
+  document.getElementById('det-tags').innerHTML =
+    `<span class="badge badge-blue">${plantLabel}</span>
+     <span class="badge badge-blue">${line}</span>
+     <span class="badge badge-gray">Day Shift</span>
+     <span class="badge badge-orange">${failure}</span>`;
+
+  // Reset new WO form for next time
+  document.getElementById('step1').style.display = 'block';
+  document.getElementById('step2').style.display = 'none';
+
+  // Show toast then go to detail
+  showToast(id, failure, line);
+  setTimeout(() => go('detail'), 300);
+}
+
+// ── TOAST ──
+function showToast(id, title, line) {
+  const t = document.getElementById('toast');
+  document.getElementById('toast-text').textContent = title + ' · ' + line;
+  document.getElementById('toast-id').textContent = id;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+function selectChip(el) { el.classList.toggle('selected'); }
+
+function runDiagnosis() {
+  document.getElementById('step1').style.display = 'none';
+  document.getElementById('step2').style.display = 'block';
+  document.getElementById('ai-loading').style.display = 'flex';
+  document.getElementById('ai-result').style.display = 'none';
+  document.getElementById('step2-actions').style.display = 'none';
+
+  setTimeout(() => {
+    document.getElementById('ai-loading').style.display = 'none';
+    document.getElementById('ai-result').style.display = 'block';
+    document.getElementById('step2-actions').style.display = 'block';
+  }, 1800);
+}
+
+// ── TABS ──
+function switchTab(el, id) {
+  el.closest('.card').querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  el.closest('.card').querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById(id).classList.add('active');
+}
+
+// ── PARTS ──
+function addPart() {
+  const row = document.createElement('div');
+  row.className = 'parts-add-row';
+  row.innerHTML = `
+    <div class="select-wrap">
+      <select class="form-control" style="font-size:13px;padding:8px 10px;">
+        <option>— Select part —</option>
+        <option>Bearing BRG-6205-2RS</option>
+        <option>Gearbox Oil ISO 220</option>
+        <option>Drive Belt B-900</option>
+        <option>Encoder Cable</option>
+      </select>
+    </div>
+    <div class="select-wrap">
+      <select class="form-control" style="font-size:13px;padding:8px 10px;">
+        <option>×1</option><option>×2</option><option>×3</option>
+      </select>
+    </div>
+    <div onclick="this.parentElement.remove()" style="cursor:pointer;color:var(--text4);font-size:18px;text-align:center;">×</div>
+  `;
+  document.getElementById('parts-list').appendChild(row);
+}
+
+// ── FILES ──
+function handleFiles(input, listId) {
+  const list = document.getElementById(listId);
+  Array.from(input.files).forEach(file => {
+    const ext  = file.name.split('.').pop().toLowerCase();
+    const icon = ['jpg','jpeg','png','gif','webp'].includes(ext) ? '🖼️' : ext === 'pdf' ? '📄' : '📎';
+    const size = file.size > 1024*1024
+      ? (file.size/1024/1024).toFixed(1)+' MB'
+      : Math.round(file.size/1024)+' KB';
+    const item = document.createElement('div');
+    item.className = 'file-item';
+    item.innerHTML = `
+      <div class="file-item-icon">${icon}</div>
+      <div class="file-item-name">${file.name}</div>
+      <div class="file-item-size">${size}</div>
+      <div class="file-remove" onclick="this.parentElement.remove()">×</div>
+    `;
+    list.appendChild(item);
+  });
+}
+
+
+// ── KPI ──
+let kpiFilter = { plant: 'all', line: 'all' };
+
+function kpiPlantFilter(el, plant) {
+  document.querySelectorAll('#kpi-plant-filters .filter-pill').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  kpiFilter.plant = plant;
+  kpiFilter.line = 'all';
+
+  const wrap = document.getElementById('kpi-line-wrap');
+  const lf = document.getElementById('kpi-line-filters');
+  const sub = document.getElementById('kpi-subtitle');
+
+  if (plant === 'all') {
+    wrap.style.display = 'none';
+    lf.innerHTML = '';
+    sub.textContent = 'Frankfurt Plant · All Lines';
+  } else {
+    wrap.style.display = 'block';
+    lf.innerHTML = '';
+    const all = document.createElement('div');
+    all.className = 'filter-pill active';
+    all.textContent = 'All Lines';
+    all.onclick = () => kpiLineFilter(all, 'all');
+    lf.appendChild(all);
+    (LINES[plant] || []).forEach(ln => {
+      const t = document.createElement('div');
+      t.className = 'filter-pill';
+      t.textContent = ln;
+      t.onclick = () => kpiLineFilter(t, ln);
+      lf.appendChild(t);
+    });
+    sub.textContent = (plant === 'p2' ? 'Plant 2' : 'Plant 3') + ' · All Lines';
+  }
+}
+
+function kpiLineFilter(el, line) {
+  document.querySelectorAll('#kpi-line-filters .filter-pill').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  kpiFilter.line = line;
+  const sub = document.getElementById('kpi-subtitle');
+  const plant = kpiFilter.plant === 'p2' ? 'Plant 2' : 'Plant 3';
+  sub.textContent = plant + ' · ' + (line === 'all' ? 'All Lines' : line);
+}
+
+function kpiToggle(mode) {
+  document.getElementById('kpi-daily').style.display   = mode === 'day'   ? 'block' : 'none';
+  document.getElementById('kpi-monthly').style.display = mode === 'month' ? 'block' : 'none';
+  document.getElementById('tog-day').classList.toggle('active', mode === 'day');
+  document.getElementById('tog-month').classList.toggle('active', mode === 'month');
+}
+
+function troubleToggle(mode) {
+  document.getElementById('trouble-freq').style.display   = mode === 'freq'   ? 'block' : 'none';
+  document.getElementById('trouble-impact').style.display = mode === 'impact' ? 'block' : 'none';
+  document.getElementById('tog-freq').classList.toggle('active', mode === 'freq');
+  document.getElementById('tog-impact').classList.toggle('active', mode === 'impact');
+}
+
+// ── INIT ──
+renderBoard();
+document.getElementById('fab').style.display = 'flex';
+</script>
+</body>
+</html>
